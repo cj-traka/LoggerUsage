@@ -99,9 +99,6 @@ class LoggerGUI:
         except:
             #if the file could not be opened, print an error message containing the file name
             print('Could not open file: ' + str(code_file))
-            #print the error message to the console
-            err = sys.exc_info()
-            print(err)
             pass
 
     def find_logger_calls(self):
@@ -134,10 +131,14 @@ class LoggerGUI:
     def save_file(self):
         if self.logger_calls:
             #pop up a file dialog to allow user to save the results
-            file_name = filedialog.asksaveasfilename(initialdir = self.directory, title = 'Save Results', filetypes = (('CSV', '*.csv'), ('all files', '*.*')))
+            file_name = filedialog.asksaveasfilename(initialdir = self.directory, title = 'Save Results', filetypes = (('Text File', '*.txt'), ('all files', '*.*')))
+            #if the file name has no extension, add .txt check for contains .
+            if not file_name.endswith('.txt'):
+                file_name = file_name + '.txt'
             formatted_results = []
             for call in self.logger_calls:
-                formatted_results.append(call.file_name + ',' + str(call.line_number) + ',' + call.logger_call)
+                #seperate filename, line number, and call into a string with a tab delimiter
+                formatted_results.append(call.file_name + '\t' + str(call.line_number) + '\t' + call.call)
             with open(file_name, 'w') as f:
                 f.write('\n'.join(formatted_results))
         else:
