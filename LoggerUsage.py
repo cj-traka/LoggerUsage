@@ -89,12 +89,14 @@ class LoggerGUI:
                     line = line.strip()
                     #if line starts with '_logger.' or 'Logger.'
                     if re.match(r'^_logger\.|^Logger\.', line):
-                        if i > 1:
-                            #if previous 2 lines are not compiler directives #If
-                            if not re.match(r'^#If|^#if', lines[i-2]):
-                                #extract the file name
-                                file_name = code_file.name
-                                self.logger_calls.append( LoggerUsage(file_name, i, line) )
+                        #if line does not contain .Trace .Start .Stop .When
+                        if not re.search(r'\.Trace|\.Start|\.Stop|\.When', line):
+                            if i > 1:
+                                #if previous 2 lines are not compiler directives #If
+                                if not re.match(r'^#If|^#if', lines[i-2]):
+                                    #extract the file name
+                                    file_name = code_file.name
+                                    self.logger_calls.append( LoggerUsage(file_name, i, line) )
 
         except:
             #if the file could not be opened, print an error message containing the file name
